@@ -31,7 +31,6 @@ class MoviesController < ApplicationController
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
     
-    
     @movies = Movie.where(rating: @selected_ratings.keys).order(ordering)
      
   end
@@ -63,5 +62,16 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
-
+  
+  def find_with_same_director
+    movie = Movie.find params[:id]
+    director = movie.director
+    if director.blank?
+      flash[:notice] = "'#{movie.title}' has no director info"
+      redirect_to movies_path
+    else
+      @movies = Movie.find_movies_of_director(director)
+    end
+  end
+  
 end
